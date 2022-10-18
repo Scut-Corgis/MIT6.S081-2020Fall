@@ -92,19 +92,6 @@ e1000_init(uint32 *xregs)
   regs[E1000_IMS] = (1 << 7); // RXDW -- Receiver Descriptor Write Back
 }
 
-int
-e1000_transmit(struct mbuf *m)
-{
-  //
-  // Your code here.
-  //
-  // the mbuf contains an ethernet frame; program it into
-  // the TX descriptor ring so that the e1000 sends it. Stash
-  // a pointer so that it can be freed after sending.
-  //
-  
-  return 0;
-}
 
 // e1000.c
 int
@@ -162,4 +149,15 @@ e1000_recv(void)
     rx_ring[rx_index].status = 0;
     regs[E1000_RDT] = rx_index;
   }
+}
+
+void
+e1000_intr(void)
+{
+  // tell the e1000 we've seen this interrupt;
+  // without this the e1000 won't raise any
+  // further interrupts.
+  regs[E1000_ICR] = 0xffffffff;
+
+  e1000_recv();
 }
